@@ -1,1 +1,11 @@
 .idea/
+target/
+derby.log
+metastore_db/
+project/
+secrets/
+*Scratch.scala
+TODO
+.DS_Store
+misc/
+results.txt
