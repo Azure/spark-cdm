@@ -5,10 +5,15 @@ import java.text.SimpleDateFormat
 import org.apache.commons.lang.time.DateUtils
 import org.apache.spark.sql.types._
 
+/**
+  * Converts between CSV/CDM data and Spark data tpyes.
+  * @param dateFormats Expected string date formats.
+  * @param outputDateFormat Output date format.
+  */
 class DataConverter(val dateFormats: Array[String] = Constants.DATE_FORMATS,
-                    val outputFormat: String = Constants.OUTPUT_FORMAT) extends Serializable {
+                    val outputDateFormat: String = Constants.OUTPUT_FORMAT) extends Serializable {
 
-  val dateFormatter = new SimpleDateFormat(outputFormat)
+  val dateFormatter = new SimpleDateFormat(outputDateFormat)
 
   val toSparkType: Map[CDMDataType.Value, DataType] = Map(
     CDMDataType.int64 -> LongType,

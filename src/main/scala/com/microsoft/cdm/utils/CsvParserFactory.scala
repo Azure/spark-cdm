@@ -4,6 +4,9 @@ import java.io.OutputStreamWriter
 
 import com.univocity.parsers.csv.{CsvParser, CsvParserSettings, CsvWriter, CsvWriterSettings}
 
+/**
+  * Builds Univocity CsvParser instances.
+  */
 object CsvParserFactory {
 
   def build(): CsvParser = {

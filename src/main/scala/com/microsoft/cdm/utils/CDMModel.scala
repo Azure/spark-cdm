@@ -7,15 +7,11 @@ import scala.collection.JavaConverters._
 
 // TODO: should probably make this a proper model interface
 
+/**
+  * Used to parse and build CDM folder model.json schema files.
+  * @param jsonString json string of the model.json file to parse
+  */
 class CDMModel(jsonString: String) {
-
-  private val modelJson: JsonObject = new JsonParser().parse(jsonString).getAsJsonObject
-  private val entities: JsonArray = modelJson.getAsJsonArray("entities")
-
-  private def getEntity(entityName: String): JsonObject = {
-    entities.asScala.find(_.getAsJsonObject.get("name").getAsString == entityName)
-      .getOrElse(throw new RuntimeException("Can't find entity " + entityName)).getAsJsonObject
-  }
 
   def listEntities(): Iterable[String] = {
     entities.asScala.map(_.getAsJsonObject.get("name").getAsString)
@@ -47,6 +43,14 @@ class CDMModel(jsonString: String) {
 
   def toJson: String = {
     new GsonBuilder().setPrettyPrinting().create().toJson(modelJson)
+  }
+
+  private val modelJson: JsonObject = new JsonParser().parse(jsonString).getAsJsonObject
+  private val entities: JsonArray = modelJson.getAsJsonArray("entities")
+
+  private def getEntity(entityName: String): JsonObject = {
+    entities.asScala.find(_.getAsJsonObject.get("name").getAsString == entityName)
+      .getOrElse(throw new RuntimeException("Can't find entity " + entityName)).getAsJsonObject
   }
 
 }

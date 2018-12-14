@@ -2,6 +2,9 @@ package com.microsoft.cdm.utils
 
 import java.math.MathContext
 
+/**
+  * Various constants for spark-csv.
+  */
 object Constants {
 
   // TODO: ensure these match the data provided
