@@ -4,7 +4,9 @@ A prototype Spark data source for the Azure "Common Data Model". Reading and wri
 
 ## Example
 
-This example assumes you have created an AAD app and given it the "Storage Blob Data Contributor" role on the ADLSgen2 storage account used for CDM data.
+1. Create an AAD app and give the service principal the "Storage Blob Data Contributor" role on the ADLSgen2 storage account used for your CDM data.
+2. Install the JAR in the `release` directory in this repo on your Spark cluster.
+3. Check out the below code for basic read and write examples.
 
 ```scala
 val df = spark.read.format("com.microsoft.cdm")
