@@ -1,6 +1,6 @@
 # spark-cdm
 
-A prototype Spark data source for the Azure "Common Data Model". Reading and writing works, but spark-cdm is definitely a work in progress.
+A prototype Spark data source for the Azure "Common Data Model". Reading and writing works, but spark-cdm is definitely a work in progress. For more information about the Azure Common Data Model, check out [this page](https://docs.microsoft.com/en-us/common-data-model/data-lake).
 
 ## Example
 
