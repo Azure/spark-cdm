@@ -1,6 +1,8 @@
 # spark-cdm
 
-A prototype Spark data source for the Azure "Common Data Model". Reading and writing works, but spark-cdm is definitely a work in progress. For more information about the Azure Common Data Model, check out [this page](https://docs.microsoft.com/en-us/common-data-model/data-lake).
+A prototype Spark data source for the Azure "Common Data Model". Reading and writing is supported, but spark-cdm is definitely a work in progress. Please file issues for any bugs that you find. For more information about the Azure Common Data Model, check out [this page](https://docs.microsoft.com/en-us/common-data-model/data-lake). <br>
+
+Note: currently only Spark 2.3 is supported.
 
 ## Example
 
