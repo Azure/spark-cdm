@@ -6,7 +6,7 @@ import org.scalatest.{BeforeAndAfter, FunSuite}
 
 import scala.util.{Random, Try}
 
-class DemoTest extends FunSuite with BeforeAndAfter {
+class ReadWriteTests extends FunSuite with BeforeAndAfter {
 
   private val appId = sys.env("APP_ID")
   private val appKey = sys.env("APP_KEY")
