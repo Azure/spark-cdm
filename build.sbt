@@ -1,10 +1,10 @@
 name := "spark-cdm"
 
-version := "0.2"
+version := "0.3"
 
 scalaVersion := "2.11.8"
 
-libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.3.2" % "provided"
+libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.4.1" % "provided"
 libraryDependencies += "com.microsoft.azure" % "adal4j" % "1.6.3"
 libraryDependencies += "com.univocity" % "univocity-parsers" % "2.7.6"
 

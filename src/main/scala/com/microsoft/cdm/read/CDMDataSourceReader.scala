@@ -2,7 +2,8 @@ package com.microsoft.cdm.read
 
 import com.microsoft.cdm.utils.{ADLGen2Provider, CDMModel, DataConverter}
 import org.apache.spark.sql.Row
-import org.apache.spark.sql.sources.v2.reader.{DataReaderFactory, DataSourceReader}
+import org.apache.spark.sql.catalyst.InternalRow
+import org.apache.spark.sql.sources.v2.reader.{DataSourceReader, InputPartition}
 import org.apache.spark.sql.types.StructType
 
 /**
@@ -29,12 +30,11 @@ class CDMDataSourceReader(val modelUri: String,
 
   /**
     * Called by the Spark runtime. Reads the model.json to find the number of data partitions for the entity specified.
-    * @return A list of CDMDataReaderFactory instances, one for each partition.
     */
-  def createDataReaderFactories : java.util.ArrayList[DataReaderFactory[Row]]= {
-    val factoryList = new java.util.ArrayList[DataReaderFactory[Row]]
+  def planInputPartitions: java.util.ArrayList[InputPartition[InternalRow]]= {
+    val factoryList = new java.util.ArrayList[InputPartition[InternalRow]]
     modelJsonParser.partitionLocations(entityName).foreach(csvUri => {
-      factoryList.add(new CDMDataReaderFactory(csvUri, readSchema(), dataConverter, adlProvider))
+      factoryList.add(new CDMInputPartition(csvUri, readSchema(), dataConverter, adlProvider))
     })
     factoryList
   }

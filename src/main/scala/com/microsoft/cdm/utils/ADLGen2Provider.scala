@@ -8,9 +8,9 @@ import scala.collection.JavaConverters._
 import org.apache.commons.httpclient.HttpStatus
 import org.apache.commons.io.{Charsets, IOUtils}
 import org.apache.http.client.utils.URIBuilder
-import org.apache.http.{HttpEntity, NameValuePair}
+import org.apache.http.{HttpEntity, HttpResponse, NameValuePair}
 import org.apache.http.entity.{FileEntity, StringEntity}
-import org.apache.http.impl.client.{BasicResponseHandler, HttpClients}
+import org.apache.http.impl.client.{BasicResponseHandler, DefaultHttpClient}
 import org.apache.http.message.BasicNameValuePair
 
 import scala.util.Try
@@ -111,7 +111,7 @@ class ADLGen2Provider(aadProvider: AADProvider) extends Serializable {
     "%s%smodel.json".format(modelDirectory, getSep(modelDirectory))
   }
 
-  private def ensureSuccess(response: CloseableHttpResponse): Unit = {
+  private def ensureSuccess(response: HttpResponse): Unit = {
     val statusCode = response.getStatusLine.getStatusCode
     if(statusCode != HttpStatus.SC_OK)
     {
@@ -126,7 +126,7 @@ class ADLGen2Provider(aadProvider: AADProvider) extends Serializable {
 
   private def buildURI(uri: String, params: Seq[NameValuePair]): URI = {
     val uriBuilder = new URIBuilder(encodeURI(uri))
-    uriBuilder.addParameters(params.asJava)
+    params.foreach(pair => uriBuilder.addParameter(pair.getName, pair.getValue))
     uriBuilder.build()
   }
 
@@ -141,7 +141,8 @@ class ADLGen2Provider(aadProvider: AADProvider) extends Serializable {
 
   // TODO: ensure we're not leaking InputStreams
   private def execute(request: HttpRequestBase): InputStream = {
-    val response = HttpClients.createDefault.execute(request)
+    val httpclient = new DefaultHttpClient
+    val response = httpclient.execute(request)
     ensureSuccess(response)
     response.getEntity.getContent
   }

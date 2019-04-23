@@ -5,7 +5,8 @@ import java.io.InputStream
 import com.microsoft.cdm.utils._
 import com.univocity.parsers.csv.CsvParser
 import org.apache.spark.sql.Row
-import org.apache.spark.sql.sources.v2.reader.DataReader
+import org.apache.spark.sql.catalyst.InternalRow
+import org.apache.spark.sql.sources.v2.reader.InputPartitionReader
 import org.apache.spark.sql.types.{StringType, StructType}
 
 /**
@@ -18,7 +19,7 @@ import org.apache.spark.sql.types.{StringType, StructType}
 class CDMDataReader(var remoteCSVPath: String,
                     var schema: StructType,
                     var adlProvider: ADLGen2Provider,
-                    var dataConverter: DataConverter) extends DataReader[Row] {
+                    var dataConverter: DataConverter) extends InputPartitionReader[InternalRow] {
 
   var parser: CsvParser = _
   var stream: InputStream = _
@@ -43,7 +44,7 @@ class CDMDataReader(var remoteCSVPath: String,
     * Called by the Spark runtime if there is data left to read.
     * @return The next row of data.
     */
-  def get: Row = {
+  def get: InternalRow = {
     val seq = row.zipWithIndex.map{ case (col, index) =>
       val dataType = schema.fields(index).dataType
       if(col == null || (col.length == 0 && dataType != StringType)) {
@@ -53,7 +54,7 @@ class CDMDataReader(var remoteCSVPath: String,
         dataConverter.jsonToData(schema.fields(index).dataType)(col)
       }
     }
-    Row.fromSeq(seq)
+    InternalRow.fromSeq(seq)
   }
 
   /**

@@ -1,6 +1,7 @@
 package com.microsoft.cdm.write
 
 import com.microsoft.cdm.utils._
+import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.{Row, SaveMode}
 import org.apache.spark.sql.sources.v2.writer.{DataSourceWriter, DataWriterFactory, WriterCommitMessage}
 import org.apache.spark.sql.types.StructType
@@ -26,7 +27,7 @@ class CDMDataSourceWriter(val jobId: String,
                           val entityName: String,
                           val dataConvert: DataConverter) extends DataSourceWriter {
 
-  def createWriterFactory: DataWriterFactory[Row] = {
+  def createWriterFactory: DataWriterFactory[InternalRow] = {
     new CDMDataWriterFactory(adlProvider, schema, jobId, modelDirectory, entityName)
   }
 
