@@ -2,8 +2,6 @@
 
 A prototype Spark data source for the Azure "Common Data Model". Reading and writing is supported, but spark-cdm is definitely a work in progress. Please file issues for any bugs that you find. For more information about the Azure Common Data Model, check out [this page](https://docs.microsoft.com/en-us/common-data-model/data-lake). <br>
 
-Note: currently only Spark 2.3 is supported.
-
 ## Example
 
 1. Create an AAD app and give the service principal the "Storage Blob Data Contributor" role on the ADLSgen2 storage account used for your CDM data.
