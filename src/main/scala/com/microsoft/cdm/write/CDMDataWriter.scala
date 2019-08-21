@@ -6,6 +6,7 @@ import com.microsoft.cdm.utils.{ADLGen2Provider, CsvParserFactory, DataConverter
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.sources.v2.writer.{DataWriter, WriterCommitMessage}
 import org.apache.commons.io.FilenameUtils
+import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.types.StructType
 
 import scala.collection.JavaConversions
@@ -20,7 +21,7 @@ import scala.collection.JavaConversions
 class CDMDataWriter(var outputCSVFilePath: String,
                     var schema: StructType,
                     var adlProvider: ADLGen2Provider,
-                    var dataConverter: DataConverter) extends DataWriter[Row] {
+                    var dataConverter: DataConverter) extends DataWriter[InternalRow] {
 
   private val stream = new ByteArrayOutputStream()
   private val writer = CsvParserFactory.buildWriter(new OutputStreamWriter(stream))
@@ -29,9 +30,9 @@ class CDMDataWriter(var outputCSVFilePath: String,
     * Called by Spark runtime. Writes a row of data to an in-memory csv file.
     * @param row row of data to write.
     */
-  def write(row: Row): Unit = {
+  def write(row: InternalRow): Unit = {
     // TODO: Univocity probably doesn't need all these array conversions
-    val strings: java.util.List[String] = JavaConversions.seqAsJavaList(row.toSeq.zipWithIndex.map{ case(col, index) =>
+    val strings: java.util.List[String] = JavaConversions.seqAsJavaList(row.toSeq(schema).zipWithIndex.map{ case(col, index) =>
       dataConverter.dataToString(col, schema.fields(index).dataType)
     })
 
