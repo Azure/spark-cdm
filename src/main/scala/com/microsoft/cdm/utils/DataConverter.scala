@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat
 import java.util.{Locale, TimeZone}
 
 import org.apache.commons.lang.time.DateUtils
-import org.apache.spark.sql.catalyst.util.{DateTimeUtils, TimestampFormatter}
+import org.apache.spark.sql.catalyst.util.{DateFormatter, DateTimeUtils, TimestampFormatter}
 import org.apache.spark.sql.types._
 import org.apache.spark.unsafe.types.UTF8String
 
@@ -13,19 +13,20 @@ import org.apache.spark.unsafe.types.UTF8String
   * @param dateFormats Expected string date formats.
   * @param outputDateFormat Output date format.
   */
-class DataConverter(val dateFormats: Array[String] = Constants.DATE_FORMATS,
-                    val outputDateFormat: String = Constants.OUTPUT_FORMAT) extends Serializable {
+class DataConverter(val dateFormats: String = Constants.TIMESTAMP_FORMAT,
+                    val outputDateFormat: String = Constants.TIMESTAMP_FORMAT) extends Serializable {
 
   val dateFormatter = new SimpleDateFormat(outputDateFormat)
 
-  private val timestampFormatter = TimestampFormatter("MM/dd/yyyy", TimeZone.getTimeZone("UTC"), Locale.US
+  private val timestampFormatter = TimestampFormatter(Constants.SINGLE_DATE_FORMAT, TimeZone.getTimeZone("UTC"))
+  private val inputDateFormatter = DateFormatter(Constants.SINGLE_DATE_FORMAT)
 
-  var format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a", Locale.US)
-  var format2 = new SimpleDateFormat("MM/dd/yyyy")
+  var timeformat = new SimpleDateFormat(Constants.TIMESTAMP_FORMAT, Locale.US)
+  var dateformat = new SimpleDateFormat(Constants.SINGLE_DATE_FORMAT)
 
   val toSparkType: Map[CDMDataType.Value, DataType] = Map(
     CDMDataType.int64 -> LongType,
-    CDMDataType.dateTime -> TimestampType,
+    CDMDataType.dateTime -> DateType,
     CDMDataType.string -> StringType,
     CDMDataType.double -> DoubleType,
     CDMDataType.decimal -> DecimalType(Constants.DECIMAL_PRECISION,0),
@@ -35,11 +36,12 @@ class DataConverter(val dateFormats: Array[String] = Constants.DATE_FORMATS,
 
   val toCdmType: Map[DataType, CDMDataType.Value] = Map(
     LongType -> CDMDataType.int64,
-    TimestampType -> CDMDataType.dateTime,
+    DateType -> CDMDataType.dateTime,
     StringType -> CDMDataType.string,
     DoubleType -> CDMDataType.double,
     DecimalType(Constants.DECIMAL_PRECISION,0) -> CDMDataType.decimal,
-    BooleanType -> CDMDataType.boolean
+    BooleanType -> CDMDataType.boolean,
+    TimestampType -> CDMDataType.dateTimeOffset
   )
 
   val jsonToData: Map[DataType, String => Any] = Map(
@@ -48,15 +50,17 @@ class DataConverter(val dateFormats: Array[String] = Constants.DATE_FORMATS,
     DoubleType -> (x => x.toDouble),
     DecimalType(Constants.DECIMAL_PRECISION,0) -> (x => BigDecimal(x, Constants.MATH_CONTEXT)),
     BooleanType -> (x => x.toBoolean),
-//    TimestampType -> (x => DateUtils.parseDate(x, dateFormats).getTime)
-    TimestampType -> (x => timestampFormatter.parse(format2.format(format.parse(x))))
+//    DateType -> (x => inputDateFormatter.parse(x)),
+//    TimestampType -> (x => timestampFormatter.parse(x))
+    DateType -> (x => inputDateFormatter.parse(dateformat.format(timeformat.parse(x)))),
+    TimestampType -> (x => timestampFormatter.parse(dateformat.format(timeformat.parse(x))))
   )
 
   def dataToString(data: Any, dataType: DataType): String = {
     if(data == null) {
       null
     }
-    else if(dataType == TimestampType) {
+    else if(dataType == DateType) {
       dateFormatter.format(data)
     }
     else {

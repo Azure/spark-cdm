@@ -8,11 +8,13 @@ import java.math.MathContext
 object Constants {
 
   // TODO: ensure these match the data provided
-  val DATE_FORMATS = Array("MM/dd/yyyy", "MM/dd/yyyy hh:mm:ss a")
-  val OUTPUT_FORMAT = "MM/dd/yyyy hh:mm:ss a"
+//  val DATE_FORMATS = Array("MM/dd/yyyy", "MM/dd/yyyy hh:mm:ss a")
+//  val OUTPUT_FORMAT = "MM/dd/yyyy hh:mm:ss a"
 
   val DECIMAL_PRECISION = 28
   val MATH_CONTEXT = new MathContext(28)
 
+  val SINGLE_DATE_FORMAT = "MM/dd/yyyy"
+  val TIMESTAMP_FORMAT = "MM/dd/yyyy hh:mm:ss a"
 
 }
