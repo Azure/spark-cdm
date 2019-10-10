@@ -26,6 +26,7 @@ class DataConverter(val dateFormats: Array[String] = Constants.DATE_FORMATS,
   )
 
   val toCdmType: Map[DataType, CDMDataType.Value] = Map(
+    IntegerType -> CDMDataType.int64,
     LongType -> CDMDataType.int64,
     DateType -> CDMDataType.dateTime,
     StringType -> CDMDataType.string,
