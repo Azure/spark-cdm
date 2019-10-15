@@ -25,16 +25,6 @@ class DataConverter(val dateFormats: Array[String] = Constants.DATE_FORMATS,
     CDMDataType.dateTimeOffset -> DateType
   )
 
-  val toCdmType: Map[DataType, CDMDataType.Value] = Map(
-    IntegerType -> CDMDataType.int64,
-    LongType -> CDMDataType.int64,
-    DateType -> CDMDataType.dateTime,
-    StringType -> CDMDataType.string,
-    DoubleType -> CDMDataType.double,
-    DecimalType(Constants.DECIMAL_PRECISION,0) -> CDMDataType.decimal,
-    BooleanType -> CDMDataType.boolean
-  )
-
   val jsonToData: Map[DataType, String => Any] = Map(
     LongType -> (x => x.toLong),
     StringType -> (x => x),
@@ -43,6 +33,19 @@ class DataConverter(val dateFormats: Array[String] = Constants.DATE_FORMATS,
     BooleanType -> (x => x.toBoolean),
     DateType -> (x => new java.sql.Date(DateUtils.parseDate(x, dateFormats).getTime))
   )
+
+  def toCdmType(dt: DataType): CDMDataType.Value = {
+    return dt match {
+      case IntegerType => CDMDataType.int64
+      case LongType => CDMDataType.int64
+      case DateType => CDMDataType.dateTime
+      case StringType => CDMDataType.string
+      case DoubleType => CDMDataType.double
+      case DecimalType() => CDMDataType.decimal
+      case BooleanType => CDMDataType.boolean
+      case TimestampType => CDMDataType.dateTimeOffset
+    }
+  }  
 
   def dataToString(data: Any, dataType: DataType): String = {
     if(data == null) {
