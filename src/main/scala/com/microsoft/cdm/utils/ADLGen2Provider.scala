@@ -176,7 +176,7 @@ class ADLGen2Provider(aadProvider: AADProvider) extends Serializable {
     createFile(uri, bearerToken)
     if(entity.getContentLength > 0) {
       val content = entity.getContent
-      val buffer = new Array[Byte](100000)
+      val buffer = new Array[Byte](100000000)
 
       while (content.read(buffer) != -1) {
         val chunk = new ByteArrayEntity(buffer)
