@@ -4,6 +4,7 @@ import org.apache.http.client.methods._
 import java.io._
 import java.net.URI
 
+import scala.collection.immutable.Stream
 import scala.collection.JavaConverters._
 import org.apache.commons.httpclient.HttpStatus
 import org.apache.commons.io.{Charsets, IOUtils}
@@ -12,6 +13,8 @@ import org.apache.http.{HttpEntity, HttpResponse, NameValuePair}
 import org.apache.http.entity.{FileEntity, StringEntity, ByteArrayEntity}
 import org.apache.http.impl.client.{BasicResponseHandler, DefaultHttpClient}
 import org.apache.http.message.BasicNameValuePair
+import org.apache.commons.io.input.CountingInputStream
+
 
 import scala.util.Try
 
@@ -147,9 +150,9 @@ class ADLGen2Provider(aadProvider: AADProvider) extends Serializable {
     response.getEntity.getContent
   }
 
-  private def appendToFile(uri: String, entity: HttpEntity, bearerToken: String): Unit = {
+  private def appendToFile(uri: String, entity: HttpEntity, bearerToken: String, position: Int): Unit = {
     val params = Seq(new BasicNameValuePair("action", "append"),
-      new BasicNameValuePair("position", "0"))
+      new BasicNameValuePair("position", position.toString))
 
     val request = buildRequest(new HttpPatch(), uri, params)
     request.setEntity(entity)
@@ -175,14 +178,14 @@ class ADLGen2Provider(aadProvider: AADProvider) extends Serializable {
   private def createAndUpload(uri: String, entity: HttpEntity, bearerToken: String): Unit = {
     createFile(uri, bearerToken)
     if(entity.getContentLength > 0) {
-      val content = entity.getContent
+      val content = new CountingInputStream(entity.getContent)
       val buffer = new Array[Byte](100000000)
 
-      while (content.read(buffer) != -1) {
-        val chunk = new ByteArrayEntity(buffer)
-        appendToFile(uri, chunk, bearerToken) 
-      } 
-      flushFile(uri, bearerToken, entity.getContentLength)
+      Stream.continually(content.read(buffer)).takeWhile(_ != -1).foreach(count => {
+        val chunk = new ByteArrayEntity(buffer.take(count))
+        appendToFile(uri, chunk, bearerToken, content.getCount - count)
+      })
+      flushFile(uri, bearerToken, content.getCount)
     }
   }
 
