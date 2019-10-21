@@ -9,7 +9,7 @@ import org.apache.commons.httpclient.HttpStatus
 import org.apache.commons.io.{Charsets, IOUtils}
 import org.apache.http.client.utils.URIBuilder
 import org.apache.http.{HttpEntity, HttpResponse, NameValuePair}
-import org.apache.http.entity.{FileEntity, StringEntity}
+import org.apache.http.entity.{FileEntity, StringEntity, ByteArrayEntity}
 import org.apache.http.impl.client.{BasicResponseHandler, DefaultHttpClient}
 import org.apache.http.message.BasicNameValuePair
 
@@ -175,7 +175,13 @@ class ADLGen2Provider(aadProvider: AADProvider) extends Serializable {
   private def createAndUpload(uri: String, entity: HttpEntity, bearerToken: String): Unit = {
     createFile(uri, bearerToken)
     if(entity.getContentLength > 0) {
-      appendToFile(uri, entity, bearerToken)
+      val content = entity.getContent
+      val buffer = new Array[Byte](100000)
+
+      while (content.read(buffer) != -1) {
+        val chunk = new ByteArrayEntity(buffer)
+        appendToFile(uri, chunk, bearerToken) 
+      } 
       flushFile(uri, bearerToken, entity.getContentLength)
     }
   }
