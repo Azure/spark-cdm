@@ -14,6 +14,7 @@ object CsvParserFactory {
     val format = settings.getFormat
     format.setDelimiter(',')
     settings.setMaxCharsPerColumn(500000)
+    settings.setMaxColumns(512 * 4)
     new CsvParser(settings)
   }
 
