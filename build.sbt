@@ -1,6 +1,6 @@
 name := "spark-cdm"
 
-version := "0.3"
+version := "0.3~markbaas"
 
 scalaVersion := "2.11.8"
 
