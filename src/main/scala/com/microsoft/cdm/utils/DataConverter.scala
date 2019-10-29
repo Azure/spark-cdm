@@ -34,16 +34,6 @@ class DataConverter(val dateFormats: String = Constants.TIMESTAMP_FORMAT,
     CDMDataType.dateTimeOffset -> TimestampType
   )
 
-  val toCdmType: Map[DataType, CDMDataType.Value] = Map(
-    LongType -> CDMDataType.int64,
-    DateType -> CDMDataType.dateTime,
-    StringType -> CDMDataType.string,
-    DoubleType -> CDMDataType.double,
-    DecimalType(Constants.DECIMAL_PRECISION,0) -> CDMDataType.decimal,
-    BooleanType -> CDMDataType.boolean,
-    TimestampType -> CDMDataType.dateTimeOffset
-  )
-
   val jsonToData: Map[DataType, String => Any] = Map(
     LongType -> (x => x.toLong),
     StringType -> (x => UTF8String.fromString(x)),
@@ -55,6 +45,19 @@ class DataConverter(val dateFormats: String = Constants.TIMESTAMP_FORMAT,
     DateType -> (x => inputDateFormatter.parse(dateformat.format(timeformat.parse(x)))),
     TimestampType -> (x => timestampFormatter.parse(dateformat.format(timeformat.parse(x))))
   )
+
+  def toCdmType(dt: DataType): CDMDataType.Value = {
+    return dt match {
+      case IntegerType => CDMDataType.int64
+      case LongType => CDMDataType.int64
+      case DateType => CDMDataType.dateTime
+      case StringType => CDMDataType.string
+      case DoubleType => CDMDataType.double
+      case DecimalType() => CDMDataType.decimal
+      case BooleanType => CDMDataType.boolean
+      case TimestampType => CDMDataType.dateTimeOffset
+    }
+  }  
 
   def dataToString(data: Any, dataType: DataType): String = {
     if(data == null) {
