@@ -14,11 +14,14 @@ object CsvParserFactory {
     val format = settings.getFormat
     format.setDelimiter(',')
     settings.setMaxCharsPerColumn(500000)
+    settings.setMaxColumns(512 * 4)
     new CsvParser(settings)
   }
 
   def buildWriter(outputWriter: OutputStreamWriter): CsvWriter = {
-    new CsvWriter(outputWriter, new CsvWriterSettings())
+    val settings = new CsvWriterSettings()
+    settings.setQuoteAllFields(true);
+    new CsvWriter(outputWriter, settings)
   }
 
 }
