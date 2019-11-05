@@ -40,10 +40,8 @@ class DataConverter(val dateFormats: String = Constants.TIMESTAMP_FORMAT,
     DoubleType -> (x => x.toDouble),
     DecimalType(Constants.DECIMAL_PRECISION,0) -> (x => BigDecimal(x, Constants.MATH_CONTEXT)),
     BooleanType -> (x => x.toBoolean),
-//    DateType -> (x => inputDateFormatter.parse(x)),
-//    TimestampType -> (x => timestampFormatter.parse(x))
-    DateType -> (x => inputDateFormatter.parse(dateformat.format(timeformat.parse(x)))),
-    TimestampType -> (x => timestampFormatter.parse(dateformat.format(timeformat.parse(x))))
+    DateType -> (x => dateFormatter.parse(x)),
+    TimestampType -> (x => dateFormatter.parse(x))
   )
 
   def toCdmType(dt: DataType): CDMDataType.Value = {
