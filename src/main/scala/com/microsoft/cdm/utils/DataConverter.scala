@@ -27,15 +27,17 @@ class DataConverter() extends Serializable {
     CDMDataType.dateTimeOffset -> TimestampType
   )
 
-  val jsonToData: Map[DataType, String => Any] = Map(
-    LongType -> (x => x.toLong),
-    StringType -> (x => UTF8String.fromString(x)),
-    DoubleType -> (x => x.toDouble),
-    DecimalType(Constants.DECIMAL_PRECISION,0) -> (x => BigDecimal(x, Constants.MATH_CONTEXT)),
-    BooleanType -> (x => x.toBoolean),
-    DateType -> (x => dateFormatter.parse(x)),
-    TimestampType -> (x => timestampFormatter.parse(x))
-  )
+  def jsonToData(dt: DataType, value: String): Any = {
+    return dt match {
+      case LongType => value.toLong
+      case DoubleType => value.toDouble
+      case DecimalType() => BigDecimal(value, Constants.MATH_CONTEXT)
+      case BooleanType => value.toBoolean
+      case DateType => dateFormatter.parse(value)
+      case TimestampType => timestampFormatter.parse(value).getTime()
+      case _ => UTF8String.fromString(value)
+    }
+  }
 
   def toCdmType(dt: DataType): CDMDataType.Value = {
     return dt match {

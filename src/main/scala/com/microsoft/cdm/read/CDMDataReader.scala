@@ -51,7 +51,7 @@ class CDMDataReader(var remoteCSVPath: String,
         null
       }
       else {
-        dataConverter.jsonToData(schema.fields(index).dataType)(col)
+        dataConverter.jsonToData(schema.fields(index).dataType, col)
       }
     }
     InternalRow.fromSeq(seq)
