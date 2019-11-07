@@ -14,7 +14,7 @@ object Constants {
   val DECIMAL_PRECISION = 28
   val MATH_CONTEXT = new MathContext(28)
 
-  val SINGLE_DATE_FORMAT = "MM/dd/yyyy"
-  val TIMESTAMP_FORMAT = "MM/dd/yyyy hh:mm:ss a"
+  val SINGLE_DATE_FORMAT = "yyyy-MM-dd"
+  val TIMESTAMP_FORMAT = "yyyy-MM-dd'T'hh:mm:ssX" // ISO8601
 
 }
