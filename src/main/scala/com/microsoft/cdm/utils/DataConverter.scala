@@ -2,8 +2,10 @@ package com.microsoft.cdm.utils
 
 import java.text.SimpleDateFormat
 import java.util.{Locale, TimeZone}
+import java.sql.Timestamp
 
 import org.apache.commons.lang.time.DateUtils
+import org.apache.spark.sql.catalyst.util.TimestampFormatter
 import org.apache.spark.sql.types._
 import org.apache.spark.unsafe.types.UTF8String
 
@@ -15,7 +17,8 @@ import org.apache.spark.unsafe.types.UTF8String
 class DataConverter() extends Serializable {
 
   val dateFormatter = new SimpleDateFormat(Constants.SINGLE_DATE_FORMAT)
-  val timestampFormatter = new SimpleDateFormat(Constants.TIMESTAMP_FORMAT)
+  val timestampFormatter = TimestampFormatter(Constants.TIMESTAMP_FORMAT, TimeZone.getTimeZone("UTC"))
+
 
   val toSparkType: Map[CDMDataType.Value, DataType] = Map(
     CDMDataType.int64 -> LongType,
@@ -34,7 +37,7 @@ class DataConverter() extends Serializable {
       case DecimalType() => Decimal(value)
       case BooleanType => value.toBoolean
       case DateType => dateFormatter.parse(value)
-      case TimestampType => timestampFormatter.parse(value).getTime()
+      case TimestampType => timestampFormatter.parse(value)
       case _ => UTF8String.fromString(value)
     }
   }
@@ -53,17 +56,11 @@ class DataConverter() extends Serializable {
   }  
 
   def dataToString(data: Any, dataType: DataType): String = {
-    if(data == null) {
-      null
-    }
-    else if(dataType == DateType) {
-      dateFormatter.format(data)
-    }
-    else if(dataType == TimestampType) {
-      timestampFormatter.format(data)
-    }
-    else {
-      data.toString
+    (dataType, data) match {
+      case (_, null) => null
+      case (DateType, _) => dateFormatter.format(data)
+      case (TimestampType, v: Number) => timestampFormatter.format(data.asInstanceOf[Long])
+      case _ => data.toString
     }
   }
 
