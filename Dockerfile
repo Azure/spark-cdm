@@ -4,4 +4,4 @@ WORKDIR /app
 
 COPY . ./
 
-ENTRYPOINT ["ls"]
+ENTRYPOINT ["./build.sh"]

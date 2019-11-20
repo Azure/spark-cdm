@@ -8,3 +8,8 @@ jobs:
     - name: Build spark-cdm step
       id: build-spark-cdm-workflow
       uses: Azure/spark-cdm@updaterelease
+    - name: Archive build
+      uses: actions/upload-artifact@v1
+      with:
+        name: spark-cdm.jar
+        path: /tmp/spark-cdm.jar
