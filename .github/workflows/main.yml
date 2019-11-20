@@ -1,0 +1,10 @@
+on: [push]
+
+jobs:
+  hello_world_job:
+    runs-on: ubuntu-latest
+    name: A job to build spark-cdm
+    steps:
+    - name: Build spark-cdm step
+      id: build-spark-cdm-workflow
+      uses: Azure/spark-cdm/build-spark-cdm@v1

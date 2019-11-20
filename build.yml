@@ -1,5 +1,5 @@
 # build.yml
-name: 'Build spark-cdm'
+name: 'build-spark-cdm-workflow'
 description: 'Builds a fat JAR for spark-cdm.'
 # outputs:
 runs:
