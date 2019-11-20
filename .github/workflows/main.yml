@@ -7,4 +7,4 @@ jobs:
     steps:
     - name: Build spark-cdm step
       id: build-spark-cdm-workflow
-      uses: Azure/spark-cdm/build-spark-cdm@v1
+      uses: Azure/spark-cdm@v1
