@@ -1,3 +1,8 @@
+# OBSOLETE
+
+A new Spark CDM Connector is available at https://github.com/Azure/spark-cdm-connector.  No further updates or tracking of issues or requests will take place in this repo.  Many thanks to those who tried out this original connector and provided feedback.  Please try out the new connector and let us know how we can improve it. 
+
+
 # spark-cdm
 
 A prototype Spark data source for the Azure "Common Data Model". Reading and writing is supported, but spark-cdm is definitely a work in progress. Please file issues for any bugs that you find. For more information about the Azure Common Data Model, check out [this page](https://docs.microsoft.com/en-us/common-data-model/data-lake). <br>
