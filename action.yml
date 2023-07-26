@@ -1,0 +1,7 @@
+# build.yml
+name: 'build-spark-cdm-workflow'
+description: 'Builds a fat JAR for spark-cdm.'
+# outputs:
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
